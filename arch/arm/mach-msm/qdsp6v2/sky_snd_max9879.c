@@ -121,12 +121,6 @@ static int ext_amp_release(struct inode *inode, struct file *file);
 static long ext_amp_ioctl(struct file *file, unsigned int cmd, unsigned long arg);
 #endif
 
-// Additional Functions for Vega Racer
-static int ext_ampdata = -1;
-static int int_ampdata = -1;
-static int use_ExAmp = 0;
-static int use_downmix = 0;
-
 #ifdef FEATURE_SKY_SND_AUDIO_TEST_COMMAND
 static int snd_extamp_read_single_reg(int reg);
 static void snd_extamp_write_single_reg(int reg, int regval);
