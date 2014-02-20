@@ -1,27 +1,26 @@
-#!/bin/bash
-###############################################################################
-#
-#                           Kernel Build Script 
-#
-###############################################################################
-# 2011-10-24 effectivesky : modified
-# 2010-12-29 allydrop     : created
-###############################################################################
-##############################################################################
-# set toolchain
-##############################################################################
-# export ARCH=arm
-# export CROSS_COMPILE=$PWD/../MSM8X60_JB/prebuilts/gcc/linux-x86/arm/arm-eabi-4.6/bin/arm-eabi-
-
-##############################################################################
-# make zImage
-##############################################################################
-mkdir -p ./obj/KERNEL_OBJ/
-make O=./obj/KERNEL_OBJ/ msm8660_im-a760s_perf_defconfig
-make -j4 O=./obj/KERNEL_OBJ/
-
-##############################################################################
-# Copy Kernel Image
-##############################################################################
-cp -f ./obj/KERNEL_OBJ/arch/arm/boot/zImage .
-
+#!/bin/sh
+############################
+# Take Tachy Kernel Source #             
+#                          #
+#         bestmjh47        #
+############################
+TOOLCHAINPATH=/home/moon/toolchain/linaro-4.7.4/bin
+export ARCH=arm
+export CROSS_COMPILE=$TOOLCHAINPATH/arm-gnueabi-
+make bestmjh47_defconfig
+echo #############################
+echo #       Now Starting...     #
+echo #############################
+make -j15
+echo Compiling Finished!
+cp arch/arm/boot/zImage zImage
+echo Striping Modules...
+mkdir modules
+rm -rf modules/*
+find -name '*.ko' -exec cp -av {} modules \;
+        for i in modules/*; do $TOOLCHAINPATH/arm-gnueabi-strip --strip-unneeded $i;done;\
+echo ""
+echo Done! zImage and modules are READY!!!
+echo ""
+echo Making bootimage...
+mkbootimgoffset --cmdline "console=NULL,115200,n8 androidboot.hardware=qcom kgsl.mmutype=gpummu vmalloc=400M loglevel=0" --base 0x41200000 --ramdisk_offset 0x01300000 --pagesize 2048 --kernel zImage --ramdisk ramdisk/bestmjh47-ramdisk.gz -o boot-ef33s-bestmjh47.img
